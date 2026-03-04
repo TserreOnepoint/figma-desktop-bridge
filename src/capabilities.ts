@@ -15,12 +15,13 @@ export var capabilities: Record<string, boolean> = {
 };
 
 // Editor type: 'figma' | 'figjam' | 'slides' | 'dev' | 'unknown'
-export var editorType: string = 'unknown';
+// Stored in an object so it can be mutated from other modules (esbuild treats imports as immutable)
+export var editorInfo = { type: 'unknown' };
 
 export var capabilityErrors: Array<{ feature: string; error: string }> = [];
 
 export function requireCapability(name: string, label?: string): void {
   if (!capabilities[name]) {
-    throw new Error((label || name) + ' is not available in this editor (' + editorType + ')');
+    throw new Error((label || name) + ' is not available in this editor (' + editorInfo.type + ')');
   }
 }

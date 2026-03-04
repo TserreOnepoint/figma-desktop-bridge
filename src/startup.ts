@@ -3,8 +3,7 @@
 // Each phase is independently try/caught so one failure doesn't block the rest
 // ============================================================================
 
-import { capabilities, capabilityErrors, editorType } from './capabilities';
-import * as caps from './capabilities';
+import { capabilities, capabilityErrors, editorInfo } from './capabilities';
 import { serializeVariable, serializeCollection } from './utils/serialize';
 
 export async function initialize(): Promise<void> {
@@ -12,11 +11,11 @@ export async function initialize(): Promise<void> {
 
   // ---- Phase 0: Editor type (always available) ----
   try {
-    caps.editorType = (figma as any).editorType || 'unknown';
+    editorInfo.type = (figma as any).editorType || 'unknown';
   } catch (e: any) {
-    caps.editorType = 'unknown';
+    editorInfo.type = 'unknown';
   }
-  console.log('\uD83C\uDF09 [Desktop Bridge] Editor type: ' + caps.editorType);
+  console.log('\uD83C\uDF09 [Desktop Bridge] Editor type: ' + editorInfo.type);
 
   // ---- Phase 1: Variables API ----
   try {
@@ -53,7 +52,7 @@ export async function initialize(): Promise<void> {
   }
 
   // ---- Phase 3: Event listeners ----
-  // If pages failed, events can't work either — report it explicitly
+  // If pages failed, events can't work either \u2014 report it explicitly
   if (!capabilities.pages) {
     capabilityErrors.push({ feature: 'events', error: 'Requires multi-page access which is unavailable' });
     console.warn('\uD83C\uDF09 [Desktop Bridge] Events skipped: pages capability required');
@@ -216,10 +215,10 @@ export async function initialize(): Promise<void> {
     type: 'CAPABILITIES',
     capabilities: capabilities,
     errors: capabilityErrors,
-    editorType: caps.editorType,
+    editorType: editorInfo.type,
   });
 
-  console.log('\uD83C\uDF09 [Desktop Bridge] Init complete. Editor: ' + caps.editorType + ', Capabilities: ' + JSON.stringify(capabilities));
+  console.log('\uD83C\uDF09 [Desktop Bridge] Init complete. Editor: ' + editorInfo.type + ', Capabilities: ' + JSON.stringify(capabilities));
   if (capabilityErrors.length > 0) {
     console.warn(
       '\uD83C\uDF09 [Desktop Bridge] Unavailable (' + capabilityErrors.length + '): ' +
