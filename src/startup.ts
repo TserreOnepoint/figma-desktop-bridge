@@ -7,7 +7,7 @@ import { capabilities, capabilityErrors, editorInfo } from './capabilities';
 import { serializeVariable, serializeCollection } from './utils/serialize';
 
 export async function initialize(): Promise<void> {
-  console.log('\uD83C\uDF09 [Desktop Bridge] Initializing...');
+  console.log('🌉 [Desktop Bridge] Initializing...');
 
   // ---- Phase 0: Editor type (always available) ----
   try {
@@ -15,7 +15,7 @@ export async function initialize(): Promise<void> {
   } catch (e: any) {
     editorInfo.type = 'unknown';
   }
-  console.log('\uD83C\uDF09 [Desktop Bridge] Editor type: ' + editorInfo.type);
+  console.log('🌉 [Desktop Bridge] Editor type: ' + editorInfo.type);
 
   // ---- Phase 1: Variables API ----
   try {
@@ -24,7 +24,7 @@ export async function initialize(): Promise<void> {
     capabilities.variables = true;
 
     console.log(
-      '\uD83C\uDF09 [Desktop Bridge] Found ' + variables.length + ' variables in ' + collections.length + ' collections'
+      '🌉 [Desktop Bridge] Found ' + variables.length + ' variables in ' + collections.length + ' collections'
     );
 
     var variablesData = {
@@ -36,10 +36,10 @@ export async function initialize(): Promise<void> {
     };
 
     figma.ui.postMessage({ type: 'VARIABLES_DATA', data: variablesData });
-    console.log('\uD83C\uDF09 [Desktop Bridge] Variables data sent to UI');
+    console.log('🌉 [Desktop Bridge] Variables data sent to UI');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'variables', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Variables API not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Variables API not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 2: Load all pages ----
@@ -48,14 +48,14 @@ export async function initialize(): Promise<void> {
     capabilities.pages = true;
   } catch (e: any) {
     capabilityErrors.push({ feature: 'pages', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] loadAllPagesAsync not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] loadAllPagesAsync not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 3: Event listeners ----
-  // If pages failed, events can't work either \u2014 report it explicitly
+  // If pages failed, events can't work either — report it explicitly
   if (!capabilities.pages) {
     capabilityErrors.push({ feature: 'events', error: 'Requires multi-page access which is unavailable' });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Events skipped: pages capability required');
+    console.warn('🌉 [Desktop Bridge] Events skipped: pages capability required');
   } else {
     try {
       figma.on('documentchange', function (event: any) {
@@ -129,38 +129,40 @@ export async function initialize(): Promise<void> {
       });
 
       capabilities.events = true;
-      console.log('\uD83C\uDF09 [Desktop Bridge] Event listeners registered');
+      console.log('🌉 [Desktop Bridge] Event listeners registered');
     } catch (e: any) {
       capabilityErrors.push({ feature: 'events', error: e.message || String(e) });
-      console.warn('\uD83C\uDF09 [Desktop Bridge] Event listeners failed: ' + (e.message || String(e)));
+      console.warn('🌉 [Desktop Bridge] Event listeners failed: ' + (e.message || String(e)));
     }
   }
 
   // ---- Phase 4: Styles API ----
   try {
-    await (figma as any).getLocalPaintStylesAsync();
+    // Just check the function exists — don't call it (can be slow on large files)
+    if (typeof (figma as any).getLocalPaintStylesAsync !== 'function') {
+      throw new Error('getLocalPaintStylesAsync not available');
+    }
     capabilities.styles = true;
-    console.log('\uD83C\uDF09 [Desktop Bridge] Styles API available');
+    console.log('🌉 [Desktop Bridge] Styles API available');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'styles', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Styles API not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Styles API not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 5: Component support ----
   try {
-    // Check if component search works (non-destructive)
-    if (capabilities.pages) {
-      figma.currentPage.findAllWithCriteria({ types: ['COMPONENT'] as any });
+    // Just check functions exist — don't traverse the node tree (findAllWithCriteria is O(n))
+    if (typeof figma.currentPage.findAllWithCriteria !== 'function') {
+      throw new Error('findAllWithCriteria not available');
     }
-    // Also check importComponentByKeyAsync exists
     if (typeof (figma as any).importComponentByKeyAsync !== 'function') {
       throw new Error('importComponentByKeyAsync not available');
     }
     capabilities.components = true;
-    console.log('\uD83C\uDF09 [Desktop Bridge] Component operations available');
+    console.log('🌉 [Desktop Bridge] Component operations available');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'components', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Component operations not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Component operations not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 6: Node creation ----
@@ -173,10 +175,10 @@ export async function initialize(): Promise<void> {
       throw new Error('Node creation functions (createRectangle, createFrame, createEllipse) not found');
     }
     capabilities.nodeCreation = true;
-    console.log('\uD83C\uDF09 [Desktop Bridge] Node creation available');
+    console.log('🌉 [Desktop Bridge] Node creation available');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'nodeCreation', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Node creation not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Node creation not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 7: Text operations ----
@@ -188,10 +190,10 @@ export async function initialize(): Promise<void> {
       throw new Error('loadFontAsync not available');
     }
     capabilities.textOperations = true;
-    console.log('\uD83C\uDF09 [Desktop Bridge] Text operations available');
+    console.log('🌉 [Desktop Bridge] Text operations available');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'textOperations', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Text operations not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Text operations not available: ' + (e.message || String(e)));
   }
 
   // ---- Phase 8: Export / Screenshot ----
@@ -204,10 +206,10 @@ export async function initialize(): Promise<void> {
       throw new Error('exportAsync not available on page');
     }
     capabilities.exportScreenshot = true;
-    console.log('\uD83C\uDF09 [Desktop Bridge] Export/screenshot available');
+    console.log('🌉 [Desktop Bridge] Export/screenshot available');
   } catch (e: any) {
     capabilityErrors.push({ feature: 'exportScreenshot', error: e.message || String(e) });
-    console.warn('\uD83C\uDF09 [Desktop Bridge] Export/screenshot not available: ' + (e.message || String(e)));
+    console.warn('🌉 [Desktop Bridge] Export/screenshot not available: ' + (e.message || String(e)));
   }
 
   // ---- Send capabilities report to UI ----
@@ -218,10 +220,10 @@ export async function initialize(): Promise<void> {
     editorType: editorInfo.type,
   });
 
-  console.log('\uD83C\uDF09 [Desktop Bridge] Init complete. Editor: ' + editorInfo.type + ', Capabilities: ' + JSON.stringify(capabilities));
+  console.log('🌉 [Desktop Bridge] Init complete. Editor: ' + editorInfo.type + ', Capabilities: ' + JSON.stringify(capabilities));
   if (capabilityErrors.length > 0) {
     console.warn(
-      '\uD83C\uDF09 [Desktop Bridge] Unavailable (' + capabilityErrors.length + '): ' +
+      '🌉 [Desktop Bridge] Unavailable (' + capabilityErrors.length + '): ' +
         capabilityErrors
           .map(function (e) {
             return e.feature;
@@ -229,4 +231,3 @@ export async function initialize(): Promise<void> {
           .join(', ')
     );
   }
-}
