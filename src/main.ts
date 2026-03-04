@@ -6,8 +6,8 @@
 
 console.log('🌉 [Desktop Bridge] Plugin loaded and ready');
 
-// Show plugin UI - starts compact, expands on user action
-figma.showUI(__html__, { width: 320, height: 80, visible: true, themeColors: true });
+// Show plugin UI - starts expanded, user can collapse via chevron
+figma.showUI(__html__, { width: 320, height: 460, visible: true, themeColors: true });
 
 // ---- Setup ----
 import { setupConsoleCapture } from './console-capture';

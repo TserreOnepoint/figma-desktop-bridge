@@ -47,7 +47,7 @@ export var systemHandlers: Record<string, (msg: any) => Promise<void>> = {
       });
       // Short delay to let the response message be sent before reload
       setTimeout(function () {
-        figma.showUI(__html__, { width: 320, height: 80, visible: true, themeColors: true });
+        figma.showUI(__html__, { width: 320, height: 460, visible: true, themeColors: true });
       }, 100);
     } catch (error: any) {
       var errorMsg = error && error.message ? error.message : String(error);
