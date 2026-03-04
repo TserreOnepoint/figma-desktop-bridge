@@ -245,17 +245,17 @@
           <span id="status-text">Scanning for MCP servers</span>
         </div>
       </div>
-      <div class="chevron open" id="chevron">
+      <div class="chevron" id="chevron">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg>
       </div>
     </div>
   </div>
 
   <!-- ======================== MIDDLE (scrollable, toggled by chevron) ======================== -->
-  <div class="middle" id="middle-content">
+  <div class="middle collapsed" id="middle-content">
     <div class="connection-info" id="connection-info">
       Connected to <strong id="file-name">...</strong>.<br>
-      MCP Bridge active \u2014 changes sync in real time.
+      MCP Bridge active.
     </div>
 
     <div class="section-title">Features</div>
@@ -289,8 +289,8 @@
     window.__figmaEditorType = null;
 
     let requestIdCounter = 0;
-    var isExpanded = true;
-    var COLLAPSED_HEIGHT = 110;
+    var isExpanded = false; // starts collapsed
+    var COLLAPSED_HEIGHT = 110;  // header + footer
     var EXPANDED_HEIGHT = 460;
 
     // ============================================================================
@@ -315,7 +315,7 @@
           var headerH = document.querySelector('.header').offsetHeight;
           var footerH = document.querySelector('.footer').offsetHeight;
           var middleH = middle.scrollHeight;
-          var total = headerH + middleH + footerH + 2;
+          var total = headerH + middleH + footerH + 2; // +2 for borders
           EXPANDED_HEIGHT = Math.min(Math.max(total, 200), 560);
           requestResize(320, EXPANDED_HEIGHT);
         }, 10);
@@ -817,6 +817,7 @@
             testWs.onopen = function() {
               clearTimeout(timeout); foundAny = true;
               activeConnections.push({ port: port, ws: testWs }); updateCompatState();
+              console.log('[MCP Bridge] WebSocket connected to port ' + port + ' (' + activeConnections.length + ' server(s))');
               attachWsHandlers(testWs, port); initializeConnection(testWs, port);
               pending--;
               if (pending <= 0) { isScanning = false; if (foundAny) { wsReconnectDelay = 500; wsReconnectAttempts = 0; } }
