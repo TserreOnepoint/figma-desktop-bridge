@@ -1,5 +1,5 @@
 {
-  "name": "Figma Desktop Bridge",
+  "name": "Figma Desktop Bridge V2",
   "id": "figma-desktop-bridge-mcp",
   "api": "1.0.0",
   "main": "code.js",
@@ -7,14 +7,17 @@
   "editorType": [
     "figma",
     "dev",
-    "slides"
+    "slides",
+    "figjam"
   ],
   "capabilities": [
     "inspect"
   ],
   "enablePrivatePluginApi": true,
   "permissions": [
-    "teamlibrary"
+    "teamlibrary",
+    "currentuser",
+    "activeusers"
   ],
   "documentAccess": "dynamic-page",
   "networkAccess": {
