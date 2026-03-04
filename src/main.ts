@@ -4,10 +4,10 @@
 // Uses postMessage to communicate with UI, bypassing worker sandbox limitations
 // Puppeteer can access UI iframe's window context to retrieve data
 
-console.log('\uD83C\uDF09 [Desktop Bridge] Plugin loaded and ready');
+console.log('🌉 [Desktop Bridge] Plugin loaded and ready');
 
-// Show plugin UI - Onepoint-branded panel
-figma.showUI(__html__, { width: 320, height: 320, visible: true, themeColors: true });
+// Show plugin UI - starts compact, expands on user action
+figma.showUI(__html__, { width: 320, height: 80, visible: true, themeColors: true });
 
 // ---- Setup ----
 import { setupConsoleCapture } from './console-capture';
@@ -48,8 +48,8 @@ figma.ui.onmessage = async (msg: any) => {
 // ---- Initialize (capability detection + data loading) ----
 initialize();
 
-console.log('\uD83C\uDF09 [Desktop Bridge] Ready to handle requests');
-console.log('\uD83C\uDF09 [Desktop Bridge] Plugin will stay open until manually closed');
+console.log('🌉 [Desktop Bridge] Ready to handle requests');
+console.log('🌉 [Desktop Bridge] Plugin will stay open until manually closed');
 
 // Plugin stays open - no auto-close
 // UI iframe remains accessible for Puppeteer to read data from window object

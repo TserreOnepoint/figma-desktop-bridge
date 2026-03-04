@@ -17,59 +17,64 @@
       overflow: hidden;
     }
 
-    /* ---- Scrollable content ---- */
+    /* ---- Scrollable wrapper ---- */
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
     }
 
-    /* ---- Section titles ---- */
-    .section-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* ---- Status card ---- */
+    /* ============================================================
+       COLLAPSED STATUS CARD (always visible)
+       ============================================================ */
     .status-card {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      background: #f8f9fa;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
+      gap: 12px;
+      padding: 14px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      flex-shrink: 0;
     }
-    .status-card.active {
-      background: #f0fafb;
-      border-color: #d0eef2;
-    }
-    .status-card.error {
-      background: #fff5f3;
-      border-color: #fdd;
-    }
+    .status-card:hover { background: #f8f9fa; }
 
     .editor-icon {
-      width: 28px;
-      height: 28px;
+      width: 40px;
+      height: 40px;
       flex-shrink: 0;
-      border-radius: 6px;
+      border-radius: 10px;
       overflow: hidden;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .editor-icon svg {
-      width: 28px;
-      height: 28px;
+      width: 40px;
+      height: 40px;
       display: block;
     }
 
+    .status-info { flex: 1; min-width: 0; }
+    .status-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a2e;
+      line-height: 1.3;
+    }
+    .status-detail {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+      font-size: 11px;
+      color: #999;
+      line-height: 1.2;
+    }
+
     .status-dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -79,8 +84,7 @@
     }
     .status-dot.active {
       background: #18a957;
-      box-shadow: 0 0 6px rgba(24,169,87,0.5);
-      animation: glow 2s ease-in-out infinite;
+      box-shadow: 0 0 5px rgba(24,169,87,0.4);
     }
     .status-dot.error-dot {
       background: #f24822;
@@ -90,148 +94,192 @@
       0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
     }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 3px rgba(24,169,87,0.3); }
-      50% { box-shadow: 0 0 8px rgba(24,169,87,0.7); }
-    }
 
-    .status-info { flex: 1; min-width: 0; }
-    .status-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #1a1a2e;
-    }
-    .status-detail {
-      font-size: 10px;
-      color: #666;
-      margin-top: 1px;
-    }
-
-    /* ---- Insights / Features ---- */
-    .insights-section { display: flex; flex-direction: column; gap: 0; }
-
-    .insight-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 10px;
-      border-top: 1px solid #eee;
-    }
-    .insight-item:last-child {
-      border-bottom: 1px solid #eee;
-    }
-
-    .insight-icon {
-      width: 16px; height: 16px;
+    .chevron {
+      width: 20px;
+      height: 20px;
       flex-shrink: 0;
-      margin-top: 1px;
+      color: #bbb;
+      transition: transform 0.25s ease, color 0.15s;
     }
-    .insight-icon svg {
-      width: 16px; height: 16px;
+    .chevron.open { transform: rotate(180deg); }
+    .chevron svg {
+      width: 20px;
+      height: 20px;
+      display: block;
     }
 
-    .insight-content { flex: 1; }
-    .insight-title {
-      font-size: 11px;
-      font-weight: 600;
+    /* ============================================================
+       EXPANDED CONTENT (hidden by default)
+       ============================================================ */
+    .expanded {
+      display: none;
+      flex-direction: column;
+      padding: 0 14px 12px;
+      gap: 14px;
+    }
+    .expanded.show {
+      display: flex;
+    }
+
+    /* ---- Divider ---- */
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 0 -14px;
+    }
+
+    /* ---- Connection info ---- */
+    .connection-info {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .connection-info strong {
       color: #1a1a2e;
-    }
-    .insight-desc {
-      font-size: 10px;
-      color: #666;
-      margin-top: 2px;
-      line-height: 1.3;
+      font-weight: 600;
     }
 
-    /* ---- All-good message ---- */
-    .all-good {
+    /* ---- Features section ---- */
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      background: #f0faf4;
-      border: 1px solid #c8e6d5;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 500;
-      color: #18a957;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .feature-item:last-child { border-bottom: none; }
+
+    .feature-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #f5f7fa;
+    }
+    .feature-icon svg {
+      width: 16px; height: 16px;
+      display: block;
+    }
+    .feature-item.unavailable .feature-icon {
+      background: #f9f9f9;
+      opacity: 0.5;
     }
 
-    /* ---- GitHub link ---- */
-    .github-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: #00B4D8;
-      font-size: 11px;
+    .feature-name {
+      flex: 1;
+      font-size: 12px;
       font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      transition: color 0.15s;
+      color: #333;
     }
-    .github-link:hover {
-      color: #0096b7;
-      text-decoration: underline;
+    .feature-item.unavailable .feature-name {
+      color: #bbb;
     }
-    .github-link svg {
-      width: 14px; height: 14px;
+
+    .feature-check {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: #34c78a;
+    }
+    .feature-check svg {
+      width: 18px; height: 18px;
+      display: block;
+    }
+
+    .feature-badge {
+      font-size: 10px;
+      font-weight: 500;
+      color: #999;
+      background: #f2f2f2;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* ---- Footer ---- */
-    .footer {
-      padding: 8px 16px;
-      text-align: center;
-      font-size: 10px;
-      color: #999;
-      flex-shrink: 0;
-      border-top: 1px solid #f0f0f0;
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 4px;
+      margin-top: auto;
     }
-    .footer a {
-      color: #00B4D8;
+    .footer-links a {
+      font-size: 10px;
+      color: #bbb;
       text-decoration: none;
-      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: #888; }
+    .footer-links a svg {
+      width: 12px; height: 12px;
     }
   </style>
 </head>
 <body>
-  <!-- Content -->
   <div class="content">
-    <!-- Connection status -->
-    <div class="status-card" id="status-card">
-      <div class="editor-icon" id="editor-icon"></div>
-      <div class="status-dot loading" id="status-dot"></div>
+    <!-- ======================== STATUS CARD (always visible) ======================== -->
+    <div class="status-card" id="status-card" onclick="toggleExpand()">
+      <div class="editor-icon" id="editor-icon">
+        <!-- Placeholder spinner while loading -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2"><path d="M12 2v4m0 12v4m-7.07-15.07l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+      </div>
       <div class="status-info">
         <div class="status-label" id="status-label">Initializing...</div>
-        <div class="status-detail" id="status-detail">Scanning for MCP servers</div>
+        <div class="status-detail" id="status-detail">
+          <span class="status-dot loading" id="status-dot"></span>
+          <span id="status-text">Scanning for MCP servers</span>
+        </div>
+      </div>
+      <div class="chevron" id="chevron">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg>
       </div>
     </div>
 
-    <!-- Features / Insights (populated dynamically) -->
-    <div id="features-section" style="display:none;">
-      <div class="section-title">Insights</div>
-      <div class="insights-section" id="features-list"></div>
-    </div>
+    <!-- ======================== EXPANDED CONTENT ======================== -->
+    <div class="expanded" id="expanded-content">
+      <div class="divider"></div>
+      <div class="connection-info" id="connection-info">
+        Connected to <strong id="file-name">...</strong>.<br>
+        MCP Bridge active \u2014 changes sync in real time.
+      </div>
 
-    <!-- All-good message (shown when no errors) -->
-    <div id="all-good-section" style="display:none;">
-      <div class="all-good">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#18a957" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        All features available
+      <div class="section-title">Features</div>
+      <div class="features-list" id="features-list">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div class="footer-links">
+        <a href="javascript:void(0)" onclick="event.stopPropagation(); window.open('https://github.com/southleft/figma-console-mcp','_blank')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
+          GitHub
+        </a>
+        <a href="javascript:void(0)" onclick="event.stopPropagation(); window.open('https://www.linkedin.com/in/thib-serre/','_blank')">
+          by Thib'z
+        </a>
       </div>
     </div>
-
-    <!-- GitHub link -->
-    <div style="margin-top:auto; text-align:center;">
-      <a href="javascript:void(0)" onclick="window.open('https://github.com/southleft/figma-console-mcp','_blank')" class="github-link">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
-        View on GitHub
-      </a>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    Brought to you by <a href="javascript:void(0)" onclick="window.open('https://www.linkedin.com/in/thib-serre/','_blank')">Thib'z</a>
   </div>
 
   <script>
@@ -248,88 +296,157 @@
     window.__figmaEditorType = null;
 
     let requestIdCounter = 0;
+    var isExpanded = false;
+    var COLLAPSED_HEIGHT = 80;
+    var EXPANDED_HEIGHT = 460;
 
-    // UI update helper
+    // ============================================================================
+    // RESIZE HELPER
+    // ============================================================================
+    function requestResize(width, height) {
+      parent.postMessage({ pluginMessage: { type: 'RESIZE', width: width, height: height } }, '*');
+    }
+
+    // ============================================================================
+    // TOGGLE EXPAND / COLLAPSE
+    // ============================================================================
+    function toggleExpand() {
+      isExpanded = !isExpanded;
+      var expanded = document.getElementById('expanded-content');
+      var chevron = document.getElementById('chevron');
+
+      if (isExpanded) {
+        expanded.classList.add('show');
+        chevron.classList.add('open');
+        // Calculate needed height based on content
+        setTimeout(function() {
+          var h = document.querySelector('.content').scrollHeight;
+          EXPANDED_HEIGHT = Math.min(Math.max(h, 300), 560);
+          requestResize(320, EXPANDED_HEIGHT);
+        }, 10);
+      } else {
+        expanded.classList.remove('show');
+        chevron.classList.remove('open');
+        requestResize(320, COLLAPSED_HEIGHT);
+      }
+    }
+
+    // ============================================================================
+    // EDITOR TYPE CONFIG
+    // ============================================================================
+    var editorLabels = {
+      figma: 'Design File',
+      figjam: 'FigJam File',
+      slides: 'Slides File',
+      dev: 'Dev Mode',
+      buzz: 'Buzz File'
+    };
+
+    var editorBadgeLabels = {
+      figma: 'Design',
+      figjam: 'FigJam',
+      slides: 'Slides',
+      dev: 'Dev Mode',
+      buzz: 'Buzz'
+    };
+
+    var editorIcons = {
+      figma: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#1199FC"/><path d="M9.5 7.5c.6-.06 1.76.24 2.6.43l3.42.7c.96.2 2.01.34 2.93.64.74.24 1.65.75 2.28 1.19 1.16.82 2.04 1.96 2.55 3.32.43 1.11.38 2.15.58 3.27.55.62.87.86 1.39 1.58-.03.23-.07.56-.22.74-.46.58-1.13 1.15-1.67 1.68-.76.75-1.51 1.5-2.24 2.27-.32.33-.66.66-1 1-.22.2-.83.99-1.1 1.02-.87.07-1.46-1.04-2.16-1.48-1.91.06-3.78-.55-5.28-1.73-2.38-1.9-2.69-4.46-3.21-7.22-.34-1.79-.77-3.44-.98-5.27.25-.36 1.7-1.79 2.07-2.07Z" fill="#E4F7FC"/><path d="M9.7 8.35c.42-.03.86.08 1.27.15.41.09.87.13 1.27.23 1.26.32 2.53.54 3.81.78.37.07.75.22 1.13.29.46.09.93.13 1.36.31 3.12 1.19 4.53 3.89 4.37 7.19.52.43 1.15 1.27 1.54 1.55-1.81 1.73-3.53 3.57-5.33 5.3-.07.07-.19.12-.28.15-.54-.36-.96-.95-1.58-1.39-1.47.04-2.8-.1-4.1-.89-1.29-.78-2.39-1.91-3-3.32-.15-.34-.32-1.24-.42-1.65-.29-1.21-.48-2.43-.71-3.68-.23-1.24-.66-2.6-.64-3.87 0-.04.05-.06.09-.07.24-.02.6.26.77.43 1.04 1.07 2.13 2.1 3.19 3.16.48.49 1.29 1.11 1.53 1.74-.49.6-.5.55-.52 1.33-.04 1.41.82 2.68 2.21 3.04.86.22 1.47.08 2.26-.35.69-.38 1.05-1.17 1.27-1.89.19-.68 0-1.49-.36-2.09-.95-1.57-2.81-1.71-4.29-.83-.91-1.19-2.14-2.18-3.14-3.28-.3-.34-2.09-1.84-1.92-2.25.06-.07.13-.08.22-.1Z" fill="#1199FC"/><path d="M16 14.2c.12-.01.24-.02.37-.01.54.04 1.11.23 1.46.65.56.67.61 1.26.55 2.09-.48.76-.9 1.13-1.76 1.35-.95.16-2.07-.56-2.28-1.51-.28-1.27.41-2.29 1.66-2.57Z" fill="#1199FC"/></svg>',
+      figjam: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#994BFB"/><path d="M11.5 8.5c.28-.02.64-.01.93-.01l7.03 0 2.05 0c.34 0 .68 0 1.02.01 2.5.04 2.16 1.86 2.15 3.53l.01 3.27c0 1.02.16 1.87-.66 2.63-1.39 1.31-2.73 2.68-4.08 4.03-.38.36-1.77 1.91-2.2 2.11-.3.14-1.74.14-2.14.14-1.27 0-2.59 0-3.87.01-.74 0-1.59.06-2.18-.49-.42-.39-.67-.89-.67-1.47-.02-.92-.01-1.84-.01-2.76l0-4.58 0-3.12c0-.62-.02-1.28.04-1.89.04-.36.11-.52.25-.78.7-.72 1.28-.76 2.21-.82Z" fill="#F3EAFD"/><path d="M10.3 9.45c.69-.04 1.54.02 2.24.02 1.01 0 2.01 0 3.02 0l5.48 0c.45 0 .93 0 1.38 0 .83 0 1-.08 1.45.67 0 .14 0 .3 0 .44.01 1.97.01 3.95 0 5.92-1 0-1.99-.01-2.98-.01-.31 0-1.2.02-1.48-.03-.08 0-.16 0-.24.01-.67.03-1.28.15-1.75.67-.24.26-.4.58-.47.93-.07.36-.05 1.72-.05 2.18.02 1.05-.02 2.2.05 3.24-2.01.04-4.07-.04-6.08-.04-1.29 0-1.08-1.51-1.08-2.41l0-2.74-.01-4.7c0-1.13-.02-2.39.06-3.5.15-.23.31-.38.46-.59Z" fill="#994BFB"/><path d="M18.47 17.44c.52-.05 1.4 0 1.95.01l3.02.05c-.19.24-.81.69-1.08.97-.67.68-1.34 1.42-2.02 2.1-.77.77-1.66 1.63-2.49 2.32 0-.91-.22-4.44.17-5.04.11-.29.26-.4.45-.41Z" fill="#994BFB"/></svg>',
+      slides: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#FD5E19"/><path d="M11.55 21.3c-.68-.05-1.41 0-2.07-.07-.74-.08-1.71-.82-1.82-1.6-.04-.47-.03-1.01-.03-1.5.01-.72.01-1.44.01-2.16l0-3.13c0-.63-.01-1.35.07-1.97.06-.46.49-1 .86-1.24.3-.21.59-.31.95-.34 1-.09 2-.07 3-.06 1.47.02 2.94.02 4.42.02l4.11-.01c.96 0 2.06-.04 3.01.11.7.11 1.01.65 1.36 1.14.12.12.18.48.18.64l.02 6.13c0 .55.19 2.81-.39 3.06l-.03.03c-1 1.09-2.07.84-3.5.9.13.56.34 1.1.55 1.63.11.28.36.76.41 1.03-.14.17-.6.21-.81.23-.5-.75-.78-2.2-1.31-2.82l-.03-.03c-.17-.13-6.83-.09-7.52 0-.43.79-.76 1.88-1.27 2.68-.21.1-.54.25-.7-.02-.06-.27.7-2.43.82-2.87Z" fill="#FDEDE7"/><path d="M21.56 10.44c.74-.01 1.57-.04 2.29.02.92.07.75 1.67.76 2.34.01.95.01 1.9.01 2.85 0 1.37.04 2.84-.09 4.2-.02.21-.21.41-.38.51-.19.11-.47.11-.69.13-1.58.01-3.15-.05-4.72-.06-2.32-.01-4.64.04-6.96 0-.76-.01-1.66 0-2.42-.07-.12-.01-.34-.1-.43-.2-.26-.26-.26-.64-.26-1 0-1.79.01-3.59.01-5.38l0-1.62c0-.48-.09-1.16.28-1.49.17-.15.24-.19.41-.21.48-.04.97-.02 1.45-.02l2.52 0 8.19-.01Z" fill="#FD5E19"/><circle cx="12" cy="14.8" r="1.2" fill="#FDEDE7"/><circle cx="12" cy="18.8" r="1.2" fill="#FDEDE7"/></svg>',
+      dev: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#16B05F"/><path d="M18.51 8.5c.16.01.58.07.52.32-.55 2.25-1.39 4.42-2.12 6.62l-1.38 4.16c-.33 1.02-.62 2.03-1.04 3.02-.24.58-.33 1.2-.82 1.54l-.1.03c-.17-.07-.26-.22-.36-.37.93-2.77 1.91-5.54 2.73-8.35.22-.74 2.37-7.81 2.57-7.97Z" fill="#E9EEE2"/><path d="M11.87 12.02c.58-.02.69.35.3.77-1.1 1.18-2.27 2.36-3.4 3.44l-.19.16c.18.13.41.39.57.56l1.01 1.03c.76.78 1.65 1.57 2.32 2.43.07.09.07.14.04.25-.1.13-.27.16-.43.19l-.02 0c-.2-.02-.54-.35-.69-.48-.66-.59-1.27-1.27-1.9-1.9-.55-.55-1.17-1.1-1.65-1.74-.07-.09-.24-.31-.22-.42.04-.21 3.78-3.99 4.26-4.29Z" fill="#E9EEE2"/><path d="M20.8 12.01c.07 0 .22 0 .27.03.3.2.81.76 1.06.98.5.45 3.09 2.92 3.24 3.35-.07.42-2.38 2.44-2.81 2.88-.45.46-.9.93-1.32 1.41-.23.19-.6.0-.73-.22l0-.1c.07-.08.87-1.09 1.75-1.96.88-.91 1.29-1.27 1.72-1.75-1.03-1.43-2.62-2.54-3.59-3.95-.19-.26-.04-.41.21-.53Z" fill="#E9EEE2"/></svg>',
+      buzz: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#FD24BC"/><path d="M14.5 9.5c1.05.02 1.88 1 2.56 1.67l2.21 2.24c1.36 1.37 2.97 2.7 4.07 4.29.25.36.2.99.07 1.41-.3.92-1.28 1.28-2.09 1.67l-2.16 1.04-4.13 2-1.27.61c-.5.25-1.81.95-2.29 1.03-.48.09-.97-.02-1.37-.28-.35-.24-.73-.65-1.03-.97-.53-.57-1.23-1.16-1.38-1.96-.06-.31 0-.7.12-1 .34-.88.79-1.73 1.21-2.57l1.99-4.03 1.21-2.53c.49-1.04.95-2.4 2.28-2.61Z" fill="#FDF5F7"/><path d="M12.33 14.27l.03.03c1.46 1.74 3.13 3.32 4.75 4.92.53.53 1.1 1.26 1.65 1.73-.67.39-1.57.79-2.28 1.13-.39.18-.76.37-1.18.46-.3-.27-.62-.69-.93-.95-1.3-1.24-2.83-2.67-3.93-4.07.31-.22.53-.91.71-1.25.38-.69.73-1.38 1.18-2.02Z" fill="#FD24BC"/><path d="M12.14 13.3c.35-.41.54-.9.77-1.41.23-.51.65-1.38 1.28-1.47.25-.03.59.29.76.44.65.6 1.28 1.24 1.91 1.87l2.18 2.15c.65.64 1.3 1.28 1.94 1.93.42.42 1.16.99 1.23 1.6.05.47-.38.87-.76 1.08-.68.36-1.4.69-2.12.96-.13-.13-.61-.58-.72-.71-.57-.58-1.15-1.13-1.72-1.71-.59-.6-1.2-1.2-1.79-1.8-.45-.45-.92-.87-1.34-1.36-.2-.22-.52-.54-.73-.75-.29-.22-.6-.58-.87-.83Z" fill="#FD24BC"/><path d="M10 18.73c.16.04.64.4.76.53 1.2 1.26 2.47 2.49 3.65 3.77-.67.3-1.33.62-1.98.96-.43.23-.93.44-1.42.5-.69-.33-2.29-1.86-2.58-2.58.12-.25.3-.5.43-.79.33-.78.72-1.66 1.14-2.4Z" fill="#FD24BC"/></svg>'
+    };
+
+    // ============================================================================
+    // FEATURE METADATA (ordered)
+    // ============================================================================
+    var featuresMeta = [
+      { key: 'variables',       name: 'Variables API',       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>' },
+      { key: 'pages',           name: 'Multi-page access',   icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>' },
+      { key: 'events',          name: 'Real-time events',    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>' },
+      { key: 'styles',          name: 'Styles API',          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>' },
+      { key: 'components',      name: 'Components',          icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>' },
+      { key: 'nodeCreation',    name: 'Node creation',       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-7-7h14"/></svg>' },
+      { key: 'textOperations',  name: 'Text operations',     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>' },
+      { key: 'exportScreenshot', name: 'Export / Screenshot', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' }
+    ];
+
+    // SVG for checkmark
+    var checkSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    // ============================================================================
+    // UI UPDATE FUNCTIONS
+    // ============================================================================
     function updateStatus(state, isActive, isError) {
       var dot = document.getElementById('status-dot');
       var label = document.getElementById('status-label');
-      var detail = document.getElementById('status-detail');
-      var card = document.getElementById('status-card');
+      var text = document.getElementById('status-text');
 
       dot.className = 'status-dot ' + (isError ? 'error-dot' : (isActive ? 'active' : 'loading'));
-      card.className = 'status-card' + (isError ? ' error' : (isActive ? ' active' : ''));
 
       if (isError) {
         label.textContent = 'Connection error';
-        detail.textContent = state || 'Could not reach plugin worker';
+        text.textContent = state || 'Could not reach plugin worker';
       } else if (isActive) {
-        label.textContent = 'Desktop Bridge active';
-        var editorLabel = window.__figmaEditorType ? (' \u2014 ' + window.__figmaEditorType) : '';
-        detail.textContent = 'Connected and ready' + editorLabel;
+        var editorType = (window.__figmaEditorType || '').toLowerCase();
+        label.textContent = editorLabels[editorType] || 'Design File';
+        text.textContent = 'Connected';
       } else {
-        label.textContent = 'Connecting...';
-        detail.textContent = 'Scanning for MCP servers';
+        label.textContent = 'Initializing...';
+        text.textContent = 'Scanning for MCP servers';
       }
     }
 
-    // Editor type icon SVGs (simplified from Figma design system)
     function updateEditorIcon(editorType) {
       var el = document.getElementById('editor-icon');
       if (!el) return;
-      var icons = {
-        figma: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#1199FC"/><path d="M9.5 7.5c.6-.06 1.76.24 2.6.43l3.42.7c.96.2 2.01.34 2.93.64.74.24 1.65.75 2.28 1.19 1.16.82 2.04 1.96 2.55 3.32.43 1.11.38 2.15.58 3.27.55.62.87.86 1.39 1.58-.03.23-.07.56-.22.74-.46.58-1.13 1.15-1.67 1.68-.76.75-1.51 1.5-2.24 2.27-.32.33-.66.66-1 1-.22.2-.83.99-1.1 1.02-.87.07-1.46-1.04-2.16-1.48-1.91.06-3.78-.55-5.28-1.73-2.38-1.9-2.69-4.46-3.21-7.22-.34-1.79-.77-3.44-.98-5.27.25-.36 1.7-1.79 2.07-2.07Z" fill="#E4F7FC"/><path d="M9.7 8.35c.42-.03.86.08 1.27.15.41.09.87.13 1.27.23 1.26.32 2.53.54 3.81.78.37.07.75.22 1.13.29.46.09.93.13 1.36.31 3.12 1.19 4.53 3.89 4.37 7.19.52.43 1.15 1.27 1.54 1.55-1.81 1.73-3.53 3.57-5.33 5.3-.07.07-.19.12-.28.15-.54-.36-.96-.95-1.58-1.39-1.47.04-2.8-.1-4.1-.89-1.29-.78-2.39-1.91-3-3.32-.15-.34-.32-1.24-.42-1.65-.29-1.21-.48-2.43-.71-3.68-.23-1.24-.66-2.6-.64-3.87 0-.04.05-.06.09-.07.24-.02.6.26.77.43 1.04 1.07 2.13 2.1 3.19 3.16.48.49 1.29 1.11 1.53 1.74-.49.6-.5.55-.52 1.33-.04 1.41.82 2.68 2.21 3.04.86.22 1.47.08 2.26-.35.69-.38 1.05-1.17 1.27-1.89.19-.68 0-1.49-.36-2.09-.95-1.57-2.81-1.71-4.29-.83-.91-1.19-2.14-2.18-3.14-3.28-.3-.34-2.09-1.84-1.92-2.25.06-.07.13-.08.22-.1Z" fill="#1199FC"/><path d="M16 14.2c.12-.01.24-.02.37-.01.54.04 1.11.23 1.46.65.56.67.61 1.26.55 2.09-.48.76-.9 1.13-1.76 1.35-.95.16-2.07-.56-2.28-1.51-.28-1.27.41-2.29 1.66-2.57Z" fill="#1199FC"/></svg>',
-        figjam: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#994BFB"/><path d="M11.5 8.5c.28-.02.64-.01.93-.01l7.03 0 2.05 0c.34 0 .68 0 1.02.01 2.5.04 2.16 1.86 2.15 3.53l.01 3.27c0 1.02.16 1.87-.66 2.63-1.39 1.31-2.73 2.68-4.08 4.03-.38.36-1.77 1.91-2.2 2.11-.3.14-1.74.14-2.14.14-1.27 0-2.59 0-3.87.01-.74 0-1.59.06-2.18-.49-.42-.39-.67-.89-.67-1.47-.02-.92-.01-1.84-.01-2.76l0-4.58 0-3.12c0-.62-.02-1.28.04-1.89.04-.36.11-.52.25-.78.7-.72 1.28-.76 2.21-.82Z" fill="#F3EAFD"/><path d="M10.3 9.45c.69-.04 1.54.02 2.24.02 1.01 0 2.01 0 3.02 0l5.48 0c.45 0 .93 0 1.38 0 .83 0 1-.08 1.45.67 0 .14 0 .3 0 .44.01 1.97.01 3.95 0 5.92-1 0-1.99-.01-2.98-.01-.31 0-1.2.02-1.48-.03-.08 0-.16 0-.24.01-.67.03-1.28.15-1.75.67-.24.26-.4.58-.47.93-.07.36-.05 1.72-.05 2.18.02 1.05-.02 2.2.05 3.24-2.01.04-4.07-.04-6.08-.04-1.29 0-1.08-1.51-1.08-2.41l0-2.74-.01-4.7c0-1.13-.02-2.39.06-3.5.15-.23.31-.38.46-.59Z" fill="#994BFB"/><path d="M18.47 17.44c.52-.05 1.4 0 1.95.01l3.02.05c-.19.24-.81.69-1.08.97-.67.68-1.34 1.42-2.02 2.1-.77.77-1.66 1.63-2.49 2.32 0-.91-.22-4.44.17-5.04.11-.29.26-.4.45-.41Z" fill="#994BFB"/></svg>',
-        slides: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#FD5E19"/><path d="M11.55 21.3c-.68-.05-1.41 0-2.07-.07-.74-.08-1.71-.82-1.82-1.6-.04-.47-.03-1.01-.03-1.5.01-.72.01-1.44.01-2.16l0-3.13c0-.63-.01-1.35.07-1.97.06-.46.49-1 .86-1.24.3-.21.59-.31.95-.34 1-.09 2-.07 3-.06 1.47.02 2.94.02 4.42.02l4.11-.01c.96 0 2.06-.04 3.01.11.7.11 1.01.65 1.36 1.14.12.12.18.48.18.64l.02 6.13c0 .55.19 2.81-.39 3.06l-.03.03c-1 1.09-2.07.84-3.5.9.13.56.34 1.1.55 1.63.11.28.36.76.41 1.03-.14.17-.6.21-.81.23-.5-.75-.78-2.2-1.31-2.82l-.03-.03c-.17-.13-6.83-.09-7.52 0-.43.79-.76 1.88-1.27 2.68-.21.1-.54.25-.7-.02-.06-.27.7-2.43.82-2.87Z" fill="#FDEDE7"/><path d="M21.56 10.44c.74-.01 1.57-.04 2.29.02.92.07.75 1.67.76 2.34.01.95.01 1.9.01 2.85 0 1.37.04 2.84-.09 4.2-.02.21-.21.41-.38.51-.19.11-.47.11-.69.13-1.58.01-3.15-.05-4.72-.06-2.32-.01-4.64.04-6.96 0-.76-.01-1.66 0-2.42-.07-.12-.01-.34-.1-.43-.2-.26-.26-.26-.64-.26-1 0-1.79.01-3.59.01-5.38l0-1.62c0-.48-.09-1.16.28-1.49.17-.15.24-.19.41-.21.48-.04.97-.02 1.45-.02l2.52 0 8.19-.01Z" fill="#FD5E19"/><circle cx="12" cy="14.8" r="1.2" fill="#FDEDE7"/><circle cx="12" cy="18.8" r="1.2" fill="#FDEDE7"/></svg>',
-        dev: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#16B05F"/><path d="M18.51 8.5c.16.01.58.07.52.32-.55 2.25-1.39 4.42-2.12 6.62l-1.38 4.16c-.33 1.02-.62 2.03-1.04 3.02-.24.58-.33 1.2-.82 1.54l-.1.03c-.17-.07-.26-.22-.36-.37.93-2.77 1.91-5.54 2.73-8.35.22-.74 2.37-7.81 2.57-7.97Z" fill="#E9EEE2"/><path d="M11.87 12.02c.58-.02.69.35.3.77-1.1 1.18-2.27 2.36-3.4 3.44l-.19.16c.18.13.41.39.57.56l1.01 1.03c.76.78 1.65 1.57 2.32 2.43.07.09.07.14.04.25-.1.13-.27.16-.43.19l-.02 0c-.2-.02-.54-.35-.69-.48-.66-.59-1.27-1.27-1.9-1.9-.55-.55-1.17-1.1-1.65-1.74-.07-.09-.24-.31-.22-.42.04-.21 3.78-3.99 4.26-4.29Z" fill="#E9EEE2"/><path d="M20.8 12.01c.07 0 .22 0 .27.03.3.2.81.76 1.06.98.5.45 3.09 2.92 3.24 3.35-.07.42-2.38 2.44-2.81 2.88-.45.46-.9.93-1.32 1.41-.23.19-.6.0-.73-.22l0-.1c.07-.08.87-1.09 1.75-1.96.88-.91 1.29-1.27 1.72-1.75-1.03-1.43-2.62-2.54-3.59-3.95-.19-.26-.04-.41.21-.53Z" fill="#E9EEE2"/></svg>',
-        buzz: '<svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="7" fill="#FD24BC"/><path d="M14.5 9.5c1.05.02 1.88 1 2.56 1.67l2.21 2.24c1.36 1.37 2.97 2.7 4.07 4.29.25.36.2.99.07 1.41-.3.92-1.28 1.28-2.09 1.67l-2.16 1.04-4.13 2-1.27.61c-.5.25-1.81.95-2.29 1.03-.48.09-.97-.02-1.37-.28-.35-.24-.73-.65-1.03-.97-.53-.57-1.23-1.16-1.38-1.96-.06-.31 0-.7.12-1 .34-.88.79-1.73 1.21-2.57l1.99-4.03 1.21-2.53c.49-1.04.95-2.4 2.28-2.61Z" fill="#FDF5F7"/><path d="M12.33 14.27l.03.03c1.46 1.74 3.13 3.32 4.75 4.92.53.53 1.1 1.26 1.65 1.73-.67.39-1.57.79-2.28 1.13-.39.18-.76.37-1.18.46-.3-.27-.62-.69-.93-.95-1.3-1.24-2.83-2.67-3.93-4.07.31-.22.53-.91.71-1.25.38-.69.73-1.38 1.18-2.02Z" fill="#FD24BC"/><path d="M12.14 13.3c.35-.41.54-.9.77-1.41.23-.51.65-1.38 1.28-1.47.25-.03.59.29.76.44.65.6 1.28 1.24 1.91 1.87l2.18 2.15c.65.64 1.3 1.28 1.94 1.93.42.42 1.16.99 1.23 1.6.05.47-.38.87-.76 1.08-.68.36-1.4.69-2.12.96-.13-.13-.61-.58-.72-.71-.57-.58-1.15-1.13-1.72-1.71-.59-.6-1.2-1.2-1.79-1.8-.45-.45-.92-.87-1.34-1.36-.2-.22-.52-.54-.73-.75-.29-.22-.6-.58-.87-.83Z" fill="#FD24BC"/><path d="M10 18.73c.16.04.64.4.76.53 1.2 1.26 2.47 2.49 3.65 3.77-.67.3-1.33.62-1.98.96-.43.23-.93.44-1.42.5-.69-.33-2.29-1.86-2.58-2.58.12-.25.3-.5.43-.79.33-.78.72-1.66 1.14-2.4Z" fill="#FD24BC"/></svg>'
-      };
       var key = (editorType || '').toLowerCase();
-      el.innerHTML = icons[key] || icons['figma'] || '';
-      el.style.display = (icons[key]) ? 'block' : 'none';
+      el.innerHTML = editorIcons[key] || editorIcons['figma'] || '';
     }
 
-    // Render capability errors into the Insights section
-    function renderCapabilities(capabilities, errors) {
-      var section = document.getElementById('features-section');
+    function renderFeatures(capabilities, errors) {
       var list = document.getElementById('features-list');
-      var allGood = document.getElementById('all-good-section');
-
-      // Feature metadata for user-friendly labels
-      var featureMeta = {
-        variables: { title: 'Variables API unavailable', desc: 'Variable operations (create, read, update, delete) are not supported in this editor.' },
-        pages: { title: 'Multi-page access unavailable', desc: 'Cannot load all pages. Some cross-page operations may not work.' },
-        events: { title: 'Real-time events unavailable', desc: 'Document changes, selection tracking, and page change events are disabled.' },
-        styles: { title: 'Styles API unavailable', desc: 'Cannot read or manipulate local paint/text/effect styles.' },
-        components: { title: 'Components unavailable', desc: 'Component search, listing, instantiation, and property management are not supported.' },
-        nodeCreation: { title: 'Node creation unavailable', desc: 'Cannot create new shapes (rectangles, frames, ellipses, etc.).' },
-        textOperations: { title: 'Text operations unavailable', desc: 'Cannot create or modify text nodes (createText, loadFontAsync).' },
-        exportScreenshot: { title: 'Export/Screenshot unavailable', desc: 'Cannot capture screenshots or export nodes to images.' }
-      };
-
-      if (!errors || errors.length === 0) {
-        section.style.display = 'none';
-        allGood.style.display = 'block';
-        return;
-      }
-
-      allGood.style.display = 'none';
-      section.style.display = 'flex';
-      section.style.flexDirection = 'column';
-      section.style.gap = '10px';
       list.innerHTML = '';
 
-      for (var i = 0; i < errors.length; i++) {
-        var err = errors[i];
-        var meta = featureMeta[err.feature] || { title: err.feature, desc: err.error };
+      var errorMap = {};
+      if (errors) {
+        for (var i = 0; i < errors.length; i++) {
+          errorMap[errors[i].feature] = true;
+        }
+      }
+
+      var editorType = (window.__figmaEditorType || '').toLowerCase();
+      var badgeLabel = editorBadgeLabels[editorType] || editorType;
+
+      for (var j = 0; j < featuresMeta.length; j++) {
+        var feat = featuresMeta[j];
+        var available = capabilities && capabilities[feat.key];
         var item = document.createElement('div');
-        item.className = 'insight-item';
-        item.innerHTML = '<div class="insight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#00B4D8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>'
-          + '<div class="insight-content">'
-          + '<div class="insight-title">' + meta.title + '</div>'
-          + '<div class="insight-desc">' + meta.desc + '</div>'
-          + '</div>';
+        item.className = 'feature-item' + (available ? '' : ' unavailable');
+
+        var iconColor = available ? '#555' : '#ccc';
+        var rightHtml = available
+          ? '<div class="feature-check">' + checkSvg + '</div>'
+          : '<span class="feature-badge">' + badgeLabel + ' only</span>';
+
+        item.innerHTML =
+          '<div class="feature-icon" style="color:' + iconColor + '">' + feat.icon + '</div>' +
+          '<span class="feature-name">' + feat.name + '</span>' +
+          rightHtml;
+
         list.appendChild(item);
       }
+    }
+
+    function fetchFileName() {
+      window.sendPluginCommand('GET_FILE_INFO', {})
+        .then(function(info) {
+          if (info && info.fileInfo && info.fileInfo.fileName) {
+            document.getElementById('file-name').textContent = info.fileInfo.fileName;
+          }
+        })
+        .catch(function() { /* non-critical */ });
     }
 
     // ============================================================================
@@ -469,10 +586,9 @@
     };
 
     // ============================================================================
-    // NEW: COMPONENT PROPERTY MANAGEMENT
+    // COMPONENT PROPERTY MANAGEMENT
     // ============================================================================
 
-    // Set component/node description
     window.setNodeDescription = (nodeId, description, descriptionMarkdown) => {
       return window.sendPluginCommand('SET_NODE_DESCRIPTION', {
         nodeId: nodeId,
@@ -481,8 +597,6 @@
       }).catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Add a component property (BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT)
-    // Note: We use 'propertyType' instead of 'type' to avoid collision with message type field
     window.addComponentProperty = (nodeId, propertyName, type, defaultValue, options) => {
       var params = { nodeId: nodeId, propertyName: propertyName, propertyType: type, defaultValue: defaultValue };
       if (options) {
@@ -492,7 +606,6 @@
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Edit an existing component property
     window.editComponentProperty = (nodeId, propertyName, newValue) => {
       return window.sendPluginCommand('EDIT_COMPONENT_PROPERTY', {
         nodeId: nodeId,
@@ -501,7 +614,6 @@
       }).catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Delete a component property
     window.deleteComponentProperty = (nodeId, propertyName) => {
       return window.sendPluginCommand('DELETE_COMPONENT_PROPERTY', {
         nodeId: nodeId,
@@ -510,10 +622,9 @@
     };
 
     // ============================================================================
-    // NEW: NODE MANIPULATION
+    // NODE MANIPULATION
     // ============================================================================
 
-    // Resize any node
     window.resizeNode = (nodeId, width, height, withConstraints) => {
       return window.sendPluginCommand('RESIZE_NODE', {
         nodeId: nodeId,
@@ -523,19 +634,16 @@
       }).catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Move/position a node
     window.moveNode = (nodeId, x, y) => {
       return window.sendPluginCommand('MOVE_NODE', { nodeId: nodeId, x: x, y: y })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set node fills (colors)
     window.setNodeFills = (nodeId, fills) => {
       return window.sendPluginCommand('SET_NODE_FILLS', { nodeId: nodeId, fills: fills })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set node strokes
     window.setNodeStrokes = (nodeId, strokes, strokeWeight) => {
       var params = { nodeId: nodeId, strokes: strokes };
       if (strokeWeight !== undefined) params.strokeWeight = strokeWeight;
@@ -543,37 +651,31 @@
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set node opacity
     window.setNodeOpacity = (nodeId, opacity) => {
       return window.sendPluginCommand('SET_NODE_OPACITY', { nodeId: nodeId, opacity: opacity })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set node corner radius
     window.setNodeCornerRadius = (nodeId, radius) => {
       return window.sendPluginCommand('SET_NODE_CORNER_RADIUS', { nodeId: nodeId, radius: radius })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Clone a node
     window.cloneNode = (nodeId) => {
       return window.sendPluginCommand('CLONE_NODE', { nodeId: nodeId })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Delete a node
     window.deleteNode = (nodeId) => {
       return window.sendPluginCommand('DELETE_NODE', { nodeId: nodeId })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Rename a node
     window.renameNode = (nodeId, newName) => {
       return window.sendPluginCommand('RENAME_NODE', { nodeId: nodeId, newName: newName })
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set text content (for text nodes)
     window.setTextContent = (nodeId, text, options) => {
       var params = { nodeId: nodeId, text: text };
       if (options) {
@@ -585,7 +687,6 @@
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Create a new node as child
     window.createChildNode = (parentId, nodeType, properties) => {
       return window.sendPluginCommand('CREATE_CHILD_NODE', {
         parentId: parentId,
@@ -595,23 +696,19 @@
     };
 
     // ============================================================================
-    // NEW: SCREENSHOT & INSTANCE PROPERTIES (Fix for visual validation loop)
+    // SCREENSHOT & INSTANCE PROPERTIES
     // ============================================================================
 
-    // Capture screenshot using plugin's exportAsync (reads current plugin state, not cloud)
-    // This solves the race condition where REST API screenshots show stale state
     window.captureScreenshot = (nodeId, options) => {
       var params = { nodeId: nodeId };
       if (options) {
-        if (options.format) params.format = options.format;  // PNG, JPG, SVG
-        if (options.scale) params.scale = options.scale;      // 1, 2, 4, etc.
+        if (options.format) params.format = options.format;
+        if (options.scale) params.scale = options.scale;
       }
       return window.sendPluginCommand('CAPTURE_SCREENSHOT', params, 30000)
         .catch(function(err) { return { success: false, error: err.message || String(err) }; });
     };
 
-    // Set component instance properties (TEXT, BOOLEAN, INSTANCE_SWAP, VARIANT)
-    // This is the correct way to update component instances vs direct text node editing
     window.setInstanceProperties = (nodeId, properties) => {
       return window.sendPluginCommand('SET_INSTANCE_PROPERTIES', {
         nodeId: nodeId,
@@ -623,25 +720,20 @@
     // WEBSOCKET BRIDGE CLIENT - Fallback transport when CDP is unavailable
     // ============================================================================
     (function() {
-      // Port range for multi-instance support (matches server's port-discovery.ts)
       var WS_PORT_RANGE_START = 9223;
       var WS_PORT_RANGE_END = 9232;
 
-      // Multi-connection state: plugin connects to ALL active MCP servers
-      // so that every Claude tab/CLI instance gets Figma access.
-      var activeConnections = []; // Array of { port, ws }
+      var activeConnections = [];
       var wsReconnectDelay = 500;
       var wsMaxReconnectDelay = 5000;
       var wsReconnectAttempts = 0;
       var wsMaxReconnectAttempts = 50;
       var isScanning = false;
 
-      // Backward-compat: ws and wsConnected reflect "at least one connection"
       var ws = null;
       var wsPort = null;
       var wsConnected = false;
 
-      // Method-to-function mapping
       var methodMap = {
         'EXECUTE_CODE': function(params) { return window.executeCode(params.code, params.timeout); },
         'UPDATE_VARIABLE': function(params) { return window.updateVariable(params.variableId, params.modeId, params.value); },
@@ -675,7 +767,6 @@
         'CAPTURE_SCREENSHOT': function(params) { return window.captureScreenshot(params.nodeId, params); },
         'SET_INSTANCE_PROPERTIES': function(params) { return window.setInstanceProperties(params.nodeId, params.properties); },
         'GET_VARIABLES_DATA': function() {
-          // Return the cached variables data directly
           if (window.__figmaVariablesReady && window.__figmaVariablesData) {
             return Promise.resolve(window.__figmaVariablesData);
           }
@@ -685,7 +776,6 @@
           return window.sendPluginCommand('GET_FILE_INFO', {});
         },
         'CLEAR_CONSOLE': function() {
-          // Console buffer is maintained server-side; this is a no-op ack
           return Promise.resolve({ cleared: true });
         },
         'RELOAD_UI': function() {
@@ -702,9 +792,6 @@
         }
       };
 
-      /**
-       * Check if we already have a connection to a specific port.
-       */
       function isPortConnected(port) {
         for (var i = 0; i < activeConnections.length; i++) {
           if (activeConnections[i].port === port && activeConnections[i].ws.readyState === 1) {
@@ -714,17 +801,11 @@
         return false;
       }
 
-      /**
-       * Remove a connection from the active list and update compat state.
-       */
       function removeConnection(port) {
         activeConnections = activeConnections.filter(function(c) { return c.port !== port; });
         updateCompatState();
       }
 
-      /**
-       * Update backward-compat variables (ws, wsPort, wsConnected).
-       */
       function updateCompatState() {
         var live = activeConnections.filter(function(c) { return c.ws.readyState === 1; });
         wsConnected = live.length > 0;
@@ -737,11 +818,7 @@
         }
       }
 
-      /**
-       * Initialize a new connection to a server: send FILE_INFO, variables, attach handlers.
-       */
       function initializeConnection(connWs, port) {
-        // Forward capabilities if already detected
         if (window.__figmaCapabilities) {
           connWs.send(JSON.stringify({
             type: 'CAPABILITIES',
@@ -749,38 +826,27 @@
             errors: window.__figmaCapabilityErrors || []
           }));
         }
-
-        // Forward cached variables if available
         if (window.__figmaVariablesReady && window.__figmaVariablesData) {
           connWs.send(JSON.stringify({
             type: 'VARIABLES_DATA',
             data: window.__figmaVariablesData
           }));
         }
-
-        // Proactively report file identity to this server
         window.sendPluginCommand('GET_FILE_INFO', {})
           .then(function(info) {
             if (connWs.readyState === 1 && info && info.success !== false) {
               connWs.send(JSON.stringify({ type: 'FILE_INFO', data: info.fileInfo || info }));
             }
           })
-          .catch(function() { /* non-critical */ });
+          .catch(function() {});
       }
 
-      /**
-       * Scan the port range and connect to ALL active MCP servers.
-       * Each server (e.g., Chat tab on 9223, Code tab on 9224) gets its own
-       * independent WebSocket connection so every Claude instance has Figma access.
-       * Falls back to retry with backoff if no servers found at all.
-       */
       function wsScanAndConnect() {
         if (isScanning) return;
         isScanning = true;
 
         var portsToTry = [];
         for (var p = WS_PORT_RANGE_START; p <= WS_PORT_RANGE_END; p++) {
-          // Skip ports we're already connected to
           if (!isPortConnected(p)) {
             portsToTry.push(p);
           }
@@ -809,19 +875,11 @@
             testWs.onopen = function() {
               clearTimeout(timeout);
               foundAny = true;
-
-              // Add to active connections
               activeConnections.push({ port: port, ws: testWs });
               updateCompatState();
-
               console.log('[MCP Bridge] WebSocket connected to port ' + port + ' (' + activeConnections.length + ' server(s) total)');
-
-              // Attach handlers for this connection
               attachWsHandlers(testWs, port);
-
-              // Send file identity and variables to this server
               initializeConnection(testWs, port);
-
               pending--;
               if (pending <= 0) {
                 isScanning = false;
@@ -838,7 +896,6 @@
               if (pending <= 0) {
                 isScanning = false;
                 if (!foundAny && activeConnections.length === 0) {
-                  // No servers found at all \u2014 retry with backoff
                   wsReconnectAttempts++;
                   if (wsReconnectAttempts <= wsMaxReconnectAttempts) {
                     console.log('[MCP Bridge] No MCP server found, retrying in ' + wsReconnectDelay + 'ms (attempt ' + wsReconnectAttempts + '/' + wsMaxReconnectAttempts + ')');
@@ -869,18 +926,12 @@
         });
       }
 
-      /**
-       * Reconnect a specific port that disconnected.
-       * Tries the same port first (server may have just restarted),
-       * then does a full rescan to pick up any new servers.
-       */
       function wsReconnectPort(port) {
         try {
           var testWs = new WebSocket('ws://localhost:' + port);
           var timeout = setTimeout(function() {
             if (testWs.readyState !== 1) {
               testWs.close();
-              // Port gone \u2014 do a full rescan to find new servers
               console.log('[MCP Bridge] Port ' + port + ' unavailable, rescanning...');
               wsScanAndConnect();
             }
@@ -905,9 +956,6 @@
         }
       }
 
-      /**
-       * Attach message/close/error handlers to an established WebSocket connection.
-       */
       function attachWsHandlers(activeWs, port) {
         activeWs.onmessage = function(event) {
           try {
@@ -923,7 +971,6 @@
               return;
             }
 
-            // Call the handler (returns a Promise) and send back the result
             Promise.resolve(handler(message.params || {}))
               .then(function(result) {
                 if (activeWs.readyState === 1) {
@@ -941,12 +988,9 @@
         };
 
         activeWs.onclose = function(event) {
-          // Remove this connection from active list
           removeConnection(port);
           console.log('[MCP Bridge] WebSocket disconnected from port ' + port + ' (' + activeConnections.length + ' server(s) remaining)');
 
-          // If replaced by same file reconnecting (e.g., plugin reloaded), stop
-          // reconnecting \u2014 the new connection is authoritative for this file.
           var wasReplaced = (event.code === 1000 && (
             event.reason === 'Replaced by new connection' ||
             event.reason === 'Replaced by same file reconnection'
@@ -956,7 +1000,6 @@
             return;
           }
 
-          // Try to reconnect to this specific port
           wsReconnectAttempts++;
           if (wsReconnectAttempts <= wsMaxReconnectAttempts) {
             setTimeout(function() { wsReconnectPort(port); }, wsReconnectDelay);
@@ -964,68 +1007,37 @@
           }
         };
 
-        activeWs.onerror = function() {
-          // onclose will fire after this, triggering reconnect
-        };
+        activeWs.onerror = function() {};
       }
 
-      /**
-       * Broadcast a message to ALL active WebSocket connections.
-       * Events like variable changes, selections, document changes need to
-       * reach every MCP server instance so they all have current state.
-       */
       function broadcastToAll(message) {
         var json = JSON.stringify(message);
         activeConnections.forEach(function(conn) {
           if (conn.ws.readyState === 1) {
-            try { conn.ws.send(json); } catch(e) { /* ignore send errors */ }
+            try { conn.ws.send(json); } catch(e) {}
           }
         });
       }
 
-      // Forward VARIABLES_DATA to all connected MCP servers
       window.__wsForwardVariables = function(data) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'VARIABLES_DATA', data: data });
-        }
+        if (wsConnected) broadcastToAll({ type: 'VARIABLES_DATA', data: data });
       };
-
-      // Forward CAPABILITIES to all servers so MCP knows what's available
       window.__wsForwardCapabilities = function(capabilities, errors) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'CAPABILITIES', capabilities: capabilities, errors: errors });
-        }
+        if (wsConnected) broadcastToAll({ type: 'CAPABILITIES', capabilities: capabilities, errors: errors });
       };
-
-      // Forward DOCUMENT_CHANGE events to all servers for cache invalidation
       window.__wsForwardDocumentChange = function(data) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'DOCUMENT_CHANGE', data: data });
-        }
+        if (wsConnected) broadcastToAll({ type: 'DOCUMENT_CHANGE', data: data });
       };
-
-      // Forward CONSOLE_CAPTURE events to all servers for console monitoring
       window.__wsForwardConsoleCapture = function(data) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'CONSOLE_CAPTURE', data: data });
-        }
+        if (wsConnected) broadcastToAll({ type: 'CONSOLE_CAPTURE', data: data });
       };
-
-      // Forward SELECTION_CHANGE events to all servers for selection tracking
       window.__wsForwardSelectionChange = function(data) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'SELECTION_CHANGE', data: data });
-        }
+        if (wsConnected) broadcastToAll({ type: 'SELECTION_CHANGE', data: data });
       };
-
-      // Forward PAGE_CHANGE events to all servers for page tracking
       window.__wsForwardPageChange = function(data) {
-        if (wsConnected) {
-          broadcastToAll({ type: 'PAGE_CHANGE', data: data });
-        }
+        if (wsConnected) broadcastToAll({ type: 'PAGE_CHANGE', data: data });
       };
 
-      // Start WebSocket connection via port scanning
       wsScanAndConnect();
     })();
 
@@ -1036,7 +1048,6 @@
       const msg = event.data.pluginMessage;
       if (!msg) return;
 
-      // Generic result handler
       const handleResult = (resultType, dataKey) => {
         const request = window.__figmaPendingRequests.get(msg.requestId);
         if (request) {
@@ -1055,25 +1066,21 @@
         }
       };
 
-      // Handle message types
       switch (msg.type) {
         case 'CAPABILITIES':
           window.__figmaCapabilities = msg.capabilities;
           window.__figmaCapabilityErrors = msg.errors || [];
           window.__figmaEditorType = msg.editorType || null;
-          // Update editor icon and connection status
           updateEditorIcon(msg.editorType);
           updateStatus('ready', true, false);
-          // Render feature availability
-          renderCapabilities(msg.capabilities, msg.errors || []);
-          // Log
+          renderFeatures(msg.capabilities, msg.errors || []);
+          fetchFileName();
           var unavailable = msg.errors ? msg.errors.map(function(e) { return e.feature; }) : [];
           if (unavailable.length === 0) {
             console.log('[MCP Bridge] All capabilities available');
           } else {
             console.log('[MCP Bridge] Ready \u2014 unavailable: ' + unavailable.join(', '));
           }
-          // Forward capabilities to all WS servers
           if (window.__wsForwardCapabilities) window.__wsForwardCapabilities(msg.capabilities, msg.errors);
           break;
 
@@ -1081,7 +1088,6 @@
           window.__figmaVariablesData = msg.data;
           window.__figmaVariablesReady = true;
           console.log('[MCP Bridge] Variables loaded - ' + (msg.data.variables ? msg.data.variables.length : 0) + ' vars');
-          // Forward to WebSocket client if connected
           if (window.__wsForwardVariables) window.__wsForwardVariables(msg.data);
           break;
 
@@ -1102,130 +1108,52 @@
           console.error('[MCP Bridge] Error:', msg.error);
           break;
 
-        // Variable operations
-        case 'EXECUTE_CODE_RESULT':
-          handleResult('EXECUTE_CODE', 'result');
-          break;
-        case 'UPDATE_VARIABLE_RESULT':
-          handleResult('UPDATE_VARIABLE', 'variable');
-          break;
-        case 'CREATE_VARIABLE_RESULT':
-          handleResult('CREATE_VARIABLE', 'variable');
-          break;
-        case 'CREATE_VARIABLE_COLLECTION_RESULT':
-          handleResult('CREATE_VARIABLE_COLLECTION', 'collection');
-          break;
-        case 'DELETE_VARIABLE_RESULT':
-          handleResult('DELETE_VARIABLE', 'deleted');
-          break;
-        case 'DELETE_VARIABLE_COLLECTION_RESULT':
-          handleResult('DELETE_VARIABLE_COLLECTION', 'deleted');
-          break;
-        case 'REFRESH_VARIABLES_RESULT':
-          handleResult('REFRESH_VARIABLES', null);
-          break;
-        case 'RENAME_VARIABLE_RESULT':
-          handleResult('RENAME_VARIABLE', 'variable');
-          break;
-        case 'SET_VARIABLE_DESCRIPTION_RESULT':
-          handleResult('SET_VARIABLE_DESCRIPTION', 'variable');
-          break;
-        case 'ADD_MODE_RESULT':
-          handleResult('ADD_MODE', 'collection');
-          break;
-        case 'RENAME_MODE_RESULT':
-          handleResult('RENAME_MODE', 'collection');
-          break;
-        case 'GET_LOCAL_COMPONENTS_RESULT':
-          handleResult('GET_LOCAL_COMPONENTS', null);
-          break;
-        case 'INSTANTIATE_COMPONENT_RESULT':
-          handleResult('INSTANTIATE_COMPONENT', 'instance');
-          break;
+        case 'EXECUTE_CODE_RESULT':          handleResult('EXECUTE_CODE', 'result'); break;
+        case 'UPDATE_VARIABLE_RESULT':       handleResult('UPDATE_VARIABLE', 'variable'); break;
+        case 'CREATE_VARIABLE_RESULT':       handleResult('CREATE_VARIABLE', 'variable'); break;
+        case 'CREATE_VARIABLE_COLLECTION_RESULT': handleResult('CREATE_VARIABLE_COLLECTION', 'collection'); break;
+        case 'DELETE_VARIABLE_RESULT':       handleResult('DELETE_VARIABLE', 'deleted'); break;
+        case 'DELETE_VARIABLE_COLLECTION_RESULT': handleResult('DELETE_VARIABLE_COLLECTION', 'deleted'); break;
+        case 'REFRESH_VARIABLES_RESULT':     handleResult('REFRESH_VARIABLES', null); break;
+        case 'RENAME_VARIABLE_RESULT':       handleResult('RENAME_VARIABLE', 'variable'); break;
+        case 'SET_VARIABLE_DESCRIPTION_RESULT': handleResult('SET_VARIABLE_DESCRIPTION', 'variable'); break;
+        case 'ADD_MODE_RESULT':              handleResult('ADD_MODE', 'collection'); break;
+        case 'RENAME_MODE_RESULT':           handleResult('RENAME_MODE', 'collection'); break;
+        case 'GET_LOCAL_COMPONENTS_RESULT':   handleResult('GET_LOCAL_COMPONENTS', null); break;
+        case 'INSTANTIATE_COMPONENT_RESULT': handleResult('INSTANTIATE_COMPONENT', 'instance'); break;
 
-        // NEW: Component property operations
-        case 'SET_NODE_DESCRIPTION_RESULT':
-          handleResult('SET_NODE_DESCRIPTION', 'node');
-          break;
-        case 'ADD_COMPONENT_PROPERTY_RESULT':
-          handleResult('ADD_COMPONENT_PROPERTY', 'propertyName');
-          break;
-        case 'EDIT_COMPONENT_PROPERTY_RESULT':
-          handleResult('EDIT_COMPONENT_PROPERTY', 'propertyName');
-          break;
-        case 'DELETE_COMPONENT_PROPERTY_RESULT':
-          handleResult('DELETE_COMPONENT_PROPERTY', null);
-          break;
+        case 'SET_NODE_DESCRIPTION_RESULT':      handleResult('SET_NODE_DESCRIPTION', 'node'); break;
+        case 'ADD_COMPONENT_PROPERTY_RESULT':    handleResult('ADD_COMPONENT_PROPERTY', 'propertyName'); break;
+        case 'EDIT_COMPONENT_PROPERTY_RESULT':   handleResult('EDIT_COMPONENT_PROPERTY', 'propertyName'); break;
+        case 'DELETE_COMPONENT_PROPERTY_RESULT':  handleResult('DELETE_COMPONENT_PROPERTY', null); break;
 
-        // NEW: Node manipulation operations
-        case 'RESIZE_NODE_RESULT':
-          handleResult('RESIZE_NODE', 'node');
-          break;
-        case 'MOVE_NODE_RESULT':
-          handleResult('MOVE_NODE', 'node');
-          break;
-        case 'SET_NODE_FILLS_RESULT':
-          handleResult('SET_NODE_FILLS', 'node');
-          break;
-        case 'SET_NODE_STROKES_RESULT':
-          handleResult('SET_NODE_STROKES', 'node');
-          break;
-        case 'SET_NODE_OPACITY_RESULT':
-          handleResult('SET_NODE_OPACITY', 'node');
-          break;
-        case 'SET_NODE_CORNER_RADIUS_RESULT':
-          handleResult('SET_NODE_CORNER_RADIUS', 'node');
-          break;
-        case 'CLONE_NODE_RESULT':
-          handleResult('CLONE_NODE', 'node');
-          break;
-        case 'DELETE_NODE_RESULT':
-          handleResult('DELETE_NODE', 'deleted');
-          break;
-        case 'RENAME_NODE_RESULT':
-          handleResult('RENAME_NODE', 'node');
-          break;
-        case 'SET_TEXT_CONTENT_RESULT':
-          handleResult('SET_TEXT_CONTENT', 'node');
-          break;
-        case 'CREATE_CHILD_NODE_RESULT':
-          handleResult('CREATE_CHILD_NODE', 'node');
-          break;
+        case 'RESIZE_NODE_RESULT':           handleResult('RESIZE_NODE', 'node'); break;
+        case 'MOVE_NODE_RESULT':             handleResult('MOVE_NODE', 'node'); break;
+        case 'SET_NODE_FILLS_RESULT':        handleResult('SET_NODE_FILLS', 'node'); break;
+        case 'SET_NODE_STROKES_RESULT':      handleResult('SET_NODE_STROKES', 'node'); break;
+        case 'SET_NODE_OPACITY_RESULT':      handleResult('SET_NODE_OPACITY', 'node'); break;
+        case 'SET_NODE_CORNER_RADIUS_RESULT': handleResult('SET_NODE_CORNER_RADIUS', 'node'); break;
+        case 'CLONE_NODE_RESULT':            handleResult('CLONE_NODE', 'node'); break;
+        case 'DELETE_NODE_RESULT':           handleResult('DELETE_NODE', 'deleted'); break;
+        case 'RENAME_NODE_RESULT':           handleResult('RENAME_NODE', 'node'); break;
+        case 'SET_TEXT_CONTENT_RESULT':       handleResult('SET_TEXT_CONTENT', 'node'); break;
+        case 'CREATE_CHILD_NODE_RESULT':     handleResult('CREATE_CHILD_NODE', 'node'); break;
 
-        // NEW: Screenshot and instance properties (visual validation loop fix)
-        case 'CAPTURE_SCREENSHOT_RESULT':
-          handleResult('CAPTURE_SCREENSHOT', 'image');
-          break;
-        case 'SET_INSTANCE_PROPERTIES_RESULT':
-          handleResult('SET_INSTANCE_PROPERTIES', 'instance');
-          break;
+        case 'CAPTURE_SCREENSHOT_RESULT':    handleResult('CAPTURE_SCREENSHOT', 'image'); break;
+        case 'SET_INSTANCE_PROPERTIES_RESULT': handleResult('SET_INSTANCE_PROPERTIES', 'instance'); break;
 
-        // File info
-        case 'GET_FILE_INFO_RESULT':
-          handleResult('GET_FILE_INFO', 'fileInfo');
-          break;
+        case 'GET_FILE_INFO_RESULT':         handleResult('GET_FILE_INFO', 'fileInfo'); break;
+        case 'RELOAD_UI_RESULT':             handleResult('RELOAD_UI', null); break;
 
-        // Plugin UI reload
-        case 'RELOAD_UI_RESULT':
-          handleResult('RELOAD_UI', null);
-          break;
-
-        // Document change events (for cache invalidation via WebSocket)
         case 'DOCUMENT_CHANGE':
           if (window.__wsForwardDocumentChange) window.__wsForwardDocumentChange(msg.data);
           break;
-
-        // Console capture events (for console monitoring via WebSocket)
         case 'CONSOLE_CAPTURE':
           if (window.__wsForwardConsoleCapture) window.__wsForwardConsoleCapture(msg);
           break;
-
-        // Selection change events (for selection tracking via WebSocket)
         case 'SELECTION_CHANGE':
           if (window.__wsForwardSelectionChange) window.__wsForwardSelectionChange(msg.data);
           break;
-
-        // Page change events (for page tracking via WebSocket)
         case 'PAGE_CHANGE':
           if (window.__wsForwardPageChange) window.__wsForwardPageChange(msg.data);
           break;
