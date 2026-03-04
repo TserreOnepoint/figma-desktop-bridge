@@ -231,3 +231,4 @@ export async function initialize(): Promise<void> {
           .join(', ')
     );
   }
+}
