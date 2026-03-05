@@ -1,7 +1,7 @@
 // ============================================================================
 // CONSOLE CAPTURE -- Intercept console.* in the QuickJS sandbox and forward
-// to ui.html via postMessage so the WebSocket bridge can relay them to the MCP
-// server. This enables console monitoring without CDP.
+// to ui.html via postMessage so the bridge relay can surface them to the MCP
+// server. Batched at 200ms to avoid flooding postMessage on tight log loops.
 // ============================================================================
 
 export function setupConsoleCapture(): void {
@@ -21,25 +21,39 @@ export function setupConsoleCapture(): void {
     }
   }
 
+  // Batch buffer — flushed every 200ms to avoid one postMessage per log entry
+  var pending: any[] = [];
+  var timer: any = null;
+
+  function flush(): void {
+    if (pending.length === 0) return;
+    figma.ui.postMessage({ type: 'CONSOLE_LOGS_BATCH', logs: pending.slice() });
+    pending = [];
+    timer = null;
+  }
+
   for (var i = 0; i < levels.length; i++) {
-    (function (level: string) {
-      (console as any)[level] = function () {
+    (function(level: string) {
+      (console as any)[level] = function() {
         originals[level].apply(console, arguments);
+
         var args: any[] = [];
-        for (var j = 0; j < arguments.length; j++) {
-          args.push(safeSerialize(arguments[j]));
-        }
         var messageParts: string[] = [];
         for (var j = 0; j < arguments.length; j++) {
+          args.push(safeSerialize(arguments[j]));
           messageParts.push(typeof arguments[j] === 'string' ? arguments[j] : String(arguments[j]));
         }
-        figma.ui.postMessage({
-          type: 'CONSOLE_CAPTURE',
-          level: level,
-          message: messageParts.join(' '),
-          args: args,
+
+        pending.push({
+          level:     level,
+          message:   messageParts.join(' '),
+          args:      args,
           timestamp: Date.now(),
         });
+
+        if (timer === null) {
+          timer = setTimeout(flush, 200);
+        }
       };
     })(levels[i]);
   }

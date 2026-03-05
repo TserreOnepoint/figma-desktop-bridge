@@ -456,6 +456,22 @@
     window.__figmaPendingRequests = new Map();
     window.__figmaEditorType = null;
 
+    // ---- In-memory buffers for bridge relay pull commands ----
+    // Populated by messages from code.js; read on demand via Supabase bridge commands.
+    var consoleLogs   = [];  // max 200: { level, message, args, timestamp }
+    var designChanges = [];  // max 100: { hasStyleChanges, hasNodeChanges, changedNodeIds, changeCount, timestamp }
+    var currentSelection = []; // current selection: [{ id, name, type, width, height }]
+
+    function pushLog(entry) {
+      consoleLogs.push(entry);
+      if (consoleLogs.length > 200) consoleLogs.shift();
+    }
+
+    function pushChange(entry) {
+      designChanges.push(entry);
+      if (designChanges.length > 100) designChanges.shift();
+    }
+
     let requestIdCounter = 0;
     var isExpanded = false; // starts collapsed
     var COLLAPSED_HEIGHT = 110;  // header + footer
@@ -922,7 +938,26 @@
           return Promise.reject(new Error('Variables data not ready.'));
         },
         'GET_FILE_INFO': function () { return window.sendPluginCommand('GET_FILE_INFO', {}); },
-        'CLEAR_CONSOLE': function () { return Promise.resolve({ cleared: true }); },
+        // ---- Bridge relay pull commands (answered from in-memory buffers) ----
+        'GET_CONSOLE_LOGS': function (params) {
+          var since = (params && params.since) ? params.since : 0;
+          return Promise.resolve(consoleLogs.filter(function (l) { return l.timestamp > since; }));
+        },
+        'CLEAR_CONSOLE': function () {
+          consoleLogs = [];
+          return Promise.resolve({ cleared: true });
+        },
+        'GET_DESIGN_CHANGES': function (params) {
+          var since = (params && params.since) ? params.since : 0;
+          var filtered = designChanges.filter(function (c) { return c.timestamp > since; });
+          if (params && params.clear) designChanges = [];
+          return Promise.resolve(filtered);
+        },
+        'GET_SELECTION': function () {
+          return Promise.resolve(currentSelection);
+        },
+        // ---- Bridge relay round-trip commands (forwarded to code.js) ----
+        'PING': function () { return window.sendPluginCommand('PING', {}); },
         'RELOAD_UI': function () { return window.sendPluginCommand('RELOAD_UI', {}); },
         'GET_CAPABILITIES': function () {
           if (window.__figmaCapabilities) return Promise.resolve({ capabilities: window.__figmaCapabilities, errors: window.__figmaCapabilityErrors });
@@ -1196,11 +1231,24 @@
         case 'SET_INSTANCE_PROPERTIES_RESULT': handleResult('SET_INSTANCE_PROPERTIES', 'instance'); break;
         case 'GET_FILE_INFO_RESULT': handleResult('GET_FILE_INFO', 'fileInfo'); break;
         case 'RELOAD_UI_RESULT': handleResult('RELOAD_UI', null); break;
+        case 'PING_RESULT': handleResult('PING', 'data'); break;
 
         case 'BRIDGE_CONFIG_LOADED': if (window.__bridgeConfigLoaded) window.__bridgeConfigLoaded(msg.config); break;
-        case 'DOCUMENT_CHANGE': if (window.__wsForwardDocumentChange) window.__wsForwardDocumentChange(msg.data); break;
-        case 'CONSOLE_CAPTURE': if (window.__wsForwardConsoleCapture) window.__wsForwardConsoleCapture(msg); break;
-        case 'SELECTION_CHANGE': if (window.__wsForwardSelectionChange) window.__wsForwardSelectionChange(msg.data); break;
+
+        // ---- Bridge relay buffer updates (from code.js → ui.html) ----
+        case 'CONSOLE_LOGS_BATCH':
+          if (msg.logs && Array.isArray(msg.logs)) {
+            for (var bi = 0; bi < msg.logs.length; bi++) { pushLog(msg.logs[bi]); }
+          }
+          break;
+        case 'DOCUMENT_CHANGE':
+          if (msg.data) pushChange(msg.data);
+          if (window.__wsForwardDocumentChange) window.__wsForwardDocumentChange(msg.data);
+          break;
+        case 'SELECTION_CHANGE':
+          if (msg.data && msg.data.nodes) currentSelection = msg.data.nodes;
+          if (window.__wsForwardSelectionChange) window.__wsForwardSelectionChange(msg.data);
+          break;
         case 'PAGE_CHANGE': if (window.__wsForwardPageChange) window.__wsForwardPageChange(msg.data); break;
       }
     };

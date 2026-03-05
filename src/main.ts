@@ -21,6 +21,7 @@ import { componentPropertyHandlers } from './handlers/component-properties';
 import { nodeHandlers } from './handlers/nodes';
 import { screenshotHandlers } from './handlers/screenshot';
 import { systemHandlers } from './handlers/system';
+import { bridgeRelayHandlers } from './handlers/bridge-relay';
 
 // ---- Console capture (must run before initialize) ----
 setupConsoleCapture();
@@ -34,7 +35,8 @@ var handlers: Record<string, (msg: any) => Promise<void>> = Object.assign(
   componentPropertyHandlers,
   nodeHandlers,
   screenshotHandlers,
-  systemHandlers
+  systemHandlers,
+  bridgeRelayHandlers
 );
 
 // ---- Message router (replaces giant if/else chain) ----

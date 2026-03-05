@@ -58,39 +58,51 @@ export async function initialize(): Promise<void> {
     console.warn('🌉 [Desktop Bridge] Events skipped: pages capability required');
   } else {
     try {
-      figma.on('documentchange', function (event: any) {
-        var hasStyleChanges = false;
-        var hasNodeChanges = false;
-        var changedNodeIds: string[] = [];
+      // Throttled at 100ms: batches rapid changes (e.g. 50 nodes created at once → 1 message)
+      var pendingNodeIds: string[] = [];
+      var pendingHasStyle = false;
+      var pendingHasNode = false;
+      var pendingChangeCount = 0;
+      var changeTimer: any = null;
 
+      figma.on('documentchange', function(event: any) {
         for (var i = 0; i < event.documentChanges.length; i++) {
           var change = event.documentChanges[i];
+          pendingChangeCount++;
           if (
             change.type === 'STYLE_CREATE' ||
             change.type === 'STYLE_DELETE' ||
             change.type === 'STYLE_PROPERTY_CHANGE'
           ) {
-            hasStyleChanges = true;
+            pendingHasStyle = true;
           } else if (change.type === 'CREATE' || change.type === 'DELETE' || change.type === 'PROPERTY_CHANGE') {
-            hasNodeChanges = true;
-            if (change.id && changedNodeIds.length < 50) {
-              changedNodeIds.push(change.id);
+            pendingHasNode = true;
+            if (change.id && pendingNodeIds.length < 50) {
+              pendingNodeIds.push(change.id);
             }
           }
         }
 
-        if (hasStyleChanges || hasNodeChanges) {
-          figma.ui.postMessage({
-            type: 'DOCUMENT_CHANGE',
-            data: {
-              hasStyleChanges: hasStyleChanges,
-              hasNodeChanges: hasNodeChanges,
-              changedNodeIds: changedNodeIds,
-              changeCount: event.documentChanges.length,
-              timestamp: Date.now(),
-            },
-          });
-        }
+        if (changeTimer !== null) clearTimeout(changeTimer);
+        changeTimer = setTimeout(function() {
+          if (pendingHasStyle || pendingHasNode) {
+            figma.ui.postMessage({
+              type: 'DOCUMENT_CHANGE',
+              data: {
+                hasStyleChanges: pendingHasStyle,
+                hasNodeChanges:  pendingHasNode,
+                changedNodeIds:  pendingNodeIds.slice(),
+                changeCount:     pendingChangeCount,
+                timestamp:       Date.now(),
+              },
+            });
+          }
+          pendingNodeIds    = [];
+          pendingHasStyle   = false;
+          pendingHasNode    = false;
+          pendingChangeCount = 0;
+          changeTimer       = null;
+        }, 100);
       });
 
       figma.on('selectionchange', function () {
