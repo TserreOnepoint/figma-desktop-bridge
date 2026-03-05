@@ -1,5 +1,5 @@
 {
-  "name": "Build With AI",
+  "name": "Remote Build With AI",
   "id": "build-remote",
   "api": "1.0.0",
   "main": "code.js",
@@ -8,7 +8,8 @@
     "figma",
     "dev",
     "slides",
-    "figjam"
+    "figjam",
+    "buzz"
   ],
   "capabilities": [
     "inspect"
