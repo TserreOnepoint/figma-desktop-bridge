@@ -36,6 +36,30 @@ export var systemHandlers: Record<string, (msg: any) => Promise<void>> = {
     }
   },
 
+  // ---- SAVE_BRIDGE_CONFIG ----
+  SAVE_BRIDGE_CONFIG: async function (msg) {
+    try {
+      if (msg.config) {
+        await figma.clientStorage.setAsync('bridgeConfig', JSON.stringify(msg.config));
+      } else {
+        await figma.clientStorage.deleteAsync('bridgeConfig');
+      }
+    } catch (error: any) {
+      // Non-critical — ignore storage failures
+    }
+  },
+
+  // ---- LOAD_BRIDGE_CONFIG ----
+  LOAD_BRIDGE_CONFIG: async function (msg) {
+    try {
+      const raw = await figma.clientStorage.getAsync('bridgeConfig');
+      const config = raw ? JSON.parse(raw as string) : null;
+      figma.ui.postMessage({ type: 'BRIDGE_CONFIG_LOADED', config });
+    } catch (error: any) {
+      figma.ui.postMessage({ type: 'BRIDGE_CONFIG_LOADED', config: null });
+    }
+  },
+
   // ---- RELOAD_UI ----
   RELOAD_UI: async function (msg) {
     try {

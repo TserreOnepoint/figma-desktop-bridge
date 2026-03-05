@@ -220,6 +220,15 @@ export async function initialize(): Promise<void> {
     editorType: editorInfo.type,
   });
 
+  // ---- Load bridge config so the UI can start Supabase polling ----
+  try {
+    const raw = await figma.clientStorage.getAsync('bridgeConfig');
+    const config = raw ? JSON.parse(raw as string) : null;
+    figma.ui.postMessage({ type: 'BRIDGE_CONFIG_LOADED', config });
+  } catch {
+    figma.ui.postMessage({ type: 'BRIDGE_CONFIG_LOADED', config: null });
+  }
+
   console.log('🌉 [Desktop Bridge] Init complete. Editor: ' + editorInfo.type + ', Capabilities: ' + JSON.stringify(capabilities));
   if (capabilityErrors.length > 0) {
     console.warn(
