@@ -398,9 +398,12 @@
     <!-- Bridge setup (shown when no config saved) -->
     <div class="bridge-setup" id="bridge-setup" style="display:none">
       <div class="bridge-setup-title">Connect to Supabase Bridge</div>
-      <div class="bridge-setup-desc">Enter your MCP server URL to link the plugin.</div>
+      <div class="bridge-setup-desc">Enter your MCP server URL, then paste the Session ID shown on the OAuth success page.</div>
       <div class="bridge-input-wrap">
         <input type="url" class="bridge-input" id="bridge-url-input" placeholder="https://xxx.workers.dev" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="bridge-input-wrap" style="margin-top:6px">
+        <input type="text" class="bridge-input" id="bridge-session-input" placeholder="Session ID (from OAuth page)" autocomplete="off" spellcheck="false" />
         <button class="bridge-btn" id="bridge-connect-btn">Connect</button>
       </div>
       <div class="bridge-error" id="bridge-error" style="display:none"></div>
@@ -1034,9 +1037,10 @@
       }
 
       // ---- Fetch config from MCP server ----
-      async function fetchBridgeConfig(serverUrl) {
-        var url = serverUrl.replace(/\/$/, '') + '/bridge/config';
-        var res = await fetch(url);
+      async function fetchBridgeConfig(serverUrl, sessionId) {
+        var configUrl = serverUrl.replace(/\/$/, '') + '/bridge/config';
+        if (sessionId) configUrl += '?session_id=' + encodeURIComponent(sessionId);
+        var res = await fetch(configUrl);
         if (!res.ok) throw new Error('Server returned ' + res.status);
         var data = await res.json();
         if (!data.supabaseUrl || !data.supabaseAnonKey || !data.sessionId) {
@@ -1049,6 +1053,7 @@
       document.addEventListener('DOMContentLoaded', function () {
         var connectBtn = document.getElementById('bridge-connect-btn');
         var urlInput = document.getElementById('bridge-url-input');
+        var sessionInput = document.getElementById('bridge-session-input');
         var errorDiv = document.getElementById('bridge-error');
         var reconfigBtn = document.getElementById('bridge-reconfigure-btn');
 
@@ -1056,11 +1061,12 @@
           connectBtn.addEventListener('click', async function () {
             var url = urlInput.value.trim();
             if (!url) return;
+            var sessionId = sessionInput ? sessionInput.value.trim() : '';
             connectBtn.disabled = true;
             connectBtn.textContent = '…';
             if (errorDiv) errorDiv.style.display = 'none';
             try {
-              var config = await fetchBridgeConfig(url);
+              var config = await fetchBridgeConfig(url, sessionId);
               saveConfig(config);
               bridgeConfig = config;
               startPolling();
@@ -1075,6 +1081,7 @@
             }
           });
           urlInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') connectBtn.click(); });
+          if (sessionInput) sessionInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') connectBtn.click(); });
         }
 
         if (reconfigBtn) {
