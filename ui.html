@@ -590,7 +590,7 @@
 
     function renderFeatures(capabilities, errors) {
       var list = document.getElementById('features-list');
-      list.innerHTML = '';
+      while (list.firstChild) list.removeChild(list.firstChild);
 
       var errorMap = {};
       if (errors) {
@@ -609,14 +609,30 @@
         item.className = 'feature-item' + (available ? '' : ' unavailable');
 
         var iconColor = available ? '#555' : '#ccc';
-        var rightHtml = available
-          ? '<div class="feature-check">' + checkSvg + '</div>'
-          : '<span class="feature-badge">Unavailable in ' + badgeLabel + '</span>';
 
-        item.innerHTML =
-          '<div class="feature-icon" style="color:' + iconColor + '">' + feat.icon + '</div>' +
-          '<span class="feature-name">' + feat.name + '</span>' +
-          rightHtml;
+        var iconDiv = document.createElement('div');
+        iconDiv.className = 'feature-icon';
+        iconDiv.style.color = iconColor;
+        iconDiv.innerHTML = feat.icon; // safe: hardcoded SVG strings only
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'feature-name';
+        nameSpan.textContent = feat.name; // safe: hardcoded strings only
+
+        item.appendChild(iconDiv);
+        item.appendChild(nameSpan);
+
+        if (available) {
+          var checkDiv = document.createElement('div');
+          checkDiv.className = 'feature-check';
+          checkDiv.innerHTML = checkSvg; // safe: hardcoded SVG string
+          item.appendChild(checkDiv);
+        } else {
+          var badgeSpan = document.createElement('span');
+          badgeSpan.className = 'feature-badge';
+          badgeSpan.textContent = 'Unavailable in ' + badgeLabel; // textContent: safe
+          item.appendChild(badgeSpan);
+        }
 
         list.appendChild(item);
       }
