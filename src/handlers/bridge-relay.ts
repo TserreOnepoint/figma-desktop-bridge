@@ -5,6 +5,8 @@
 // ES2017 target: no ?. or ?? operators — use explicit checks.
 // ============================================================================
 
+import { editorInfo } from '../capabilities';
+
 export var bridgeRelayHandlers: Record<string, (msg: any) => Promise<void>> = {
 
   // ---- PING ------------------------------------------------------------------
@@ -26,6 +28,7 @@ export var bridgeRelayHandlers: Record<string, (msg: any) => Promise<void>> = {
           connected: true,
           fileKey: fileKey,
           fileName: fileName,
+          editorType: editorInfo.type,
           currentPage: currentPageName,
           currentPageId: currentPageId,
           selectionCount: selectionCount,
